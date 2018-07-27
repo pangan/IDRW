@@ -1,6 +1,9 @@
-import usb.core
+
 import usb.control
 from idrw.beep import beep
+from idrw.utils import int_list_to_hex
+
+from time import sleep
 
 def read_tag(dev):
     BUFFER_SIZE = 256
@@ -30,24 +33,33 @@ def read_tag(dev):
 def array_to_hex_string(input):
     return ' '.join([hex(x) for x in input])
 
-def get_customer_id(input):
+def get_customer_id_hex(input):
     return ' '.join([hex(x) for x in input[12:13]])
 
-def get_tag_value(input):
+def get_tag_value_hex(input):
     return ' '.join([hex(x) for x in input[13:17]])
 
+def get_customer_id_int(input):
+    return input[12:13]
 
-
-
+def get_tag_value_int(input):
+    return input[13:17]
 
 dev = usb.core.find(idVendor=0xffff, idProduct=0x0035)
-ret = read_tag(dev)
-beep(dev)
-print (ret)
-print (array_to_hex_string(ret))
 
-customer_id = get_customer_id(ret)
-tag_value = get_tag_value(ret)
+try:
+    while True:
 
-print('customer id={}'.format(customer_id))
-print('tag value={}'.format(tag_value))
+        ret = read_tag(dev)
+        sleep(0.5)
+        if len(ret)>=18:
+            beep(dev)
+
+            customer_id = get_customer_id_int(ret)
+            tag_value = get_tag_value_int(ret)
+            print('----')
+            print('customer id = {}'.format(int_list_to_hex(customer_id)))
+            print('tag value = {}'.format(int_list_to_hex(tag_value)))
+
+except KeyboardInterrupt as ex:
+    exit(0)
