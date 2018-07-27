@@ -10,3 +10,5 @@ brew install libusb
 
 in linux :
 sudo apt-get install libusb-1.0-0-dev
+
+https://github.com/charlysan/pyrfidhid/wiki/Reverse-Engineering-A-USB-HID-RFID-Reader-Writer
